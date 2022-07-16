@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="No192Flow" doc:id="d262e47b-a2d8-4e14-990c-88fbf2fabf69" >
+		<http:listener doc:name="Listener" doc:id="42c6c742-44bb-4704-9f3d-bb2f35a54a0e" config-ref="HTTP_Listener_config" path="/192"/>
+		<set-variable value='#[{firstName:"Huan", lastName:"Dao"}]' doc:name='customer to {firstName:"Huan", lastName:"Dao"}' doc:id="b7fb8c4a-ac92-4cf9-bde1-9b79e5c86aab" variableName='customer'/>
+		<logger level="INFO" doc:name="firstName" doc:id="ac372247-7d34-4d21-b1b6-2389982fd6b5" message="#[vars.customer.firstName]"/>
+	</flow>
+</mule>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="6953a259-b189-4448-83da-a581d6410a39" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="63cc0fb6-1c27-4269-8c54-af24da0bbeb7" >
+		<db:my-sql-connection host="mudb.learn.mulesoft.com" port="3306" user="mule" password="mule" database="training" />
+	</db:config>
+	<flow name="training4-american-wsFlow" doc:id="70113d98-c501-4938-89b6-811d7fc5f8ab" >
+		<http:listener doc:name="Listener" doc:id="fd808dcc-d259-4646-b2be-6b31a02060bc" config-ref="HTTP_Listener_config" path="/flights"/>
+		<ee:transform doc:name="Transform Message" doc:id="9ee8f0de-3835-458a-8af5-ad04d811ac87" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:select doc:name="Select" doc:id="4040a2ae-de3d-41ce-bc57-f8e545db6fb4" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT *
+FROM american
+WHERE toAirport = : toAirport]]></db:sql>
+			<db:input-parameters ><![CDATA[#[output application/java
+---
+{
+	'toAirport': payload
+}]]]></db:input-parameters>
+		
+</db:select>
+		<logger level="INFO" doc:name="Logger" doc:id="51750dd9-ddae-459e-ad2e-88e2d72f9edc" />
+	
+</flow>
+</mule>

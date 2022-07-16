@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="6953a259-b189-4448-83da-a581d6410a39" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="training4-american-wsFlow" doc:id="70113d98-c501-4938-89b6-811d7fc5f8ab" >
+		<http:listener doc:name="Listener" doc:id="fd808dcc-d259-4646-b2be-6b31a02060bc" config-ref="HTTP_Listener_config" path="/flights"/>
+		<set-payload value="Flight info" doc:name="Set Payload" doc:id="e7d50a91-4406-4e29-9cd4-c714e2569105" />
+	</flow>
+</mule>

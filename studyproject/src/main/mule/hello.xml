@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<flow name="helloFlow" doc:id="33e6a491-95ad-4d34-b88b-c21c6afa5414" >
+		<http:listener doc:name="Listener" doc:id="b297f020-777a-4fd8-87f6-1f6c7257c271" config-ref="HTTP_Listener_config" path="/create"/>
+		<file:create-directory doc:name="Create Home" doc:id="b84263e9-8061-47a7-ae56-4624a7e59300" directoryPath="C:\Users\dthbk\Desktop"/>
+	</flow>
+</mule>

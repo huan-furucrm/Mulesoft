@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
+	<flow name="No191Flow" doc:id="aa70ffe2-15c5-45fb-a3d2-3df62dfe63cc" >
+		<http:listener doc:name="Listener" doc:id="5c235297-b9a6-418a-9f1a-2b095ac1f31f" config-ref="HTTP_Listener_config" path="/191"/>
+		<set-payload value='#[["a", "b", "c"]]' doc:name='["a", "b", "c"]' doc:id="7aa00779-3d2a-4aca-9da0-e16f771c2ea0" />
+		<batch:job jobName="No191Batch_Job" doc:id="3e55e606-4548-41f0-8f5e-488b9bd4db53" >
+			<batch:process-records >
+				<batch:step name="Batch_Step1" doc:id="25839e42-83a2-4c2c-ad37-ad8f8e892466" >
+					<set-payload value="#[upper(payload)]" doc:name="upper(payload)" doc:id="8fdc6cd1-a07e-4a85-be54-793f2319c654" />
+				</batch:step>
+			</batch:process-records>
+			<batch:on-complete >
+				<logger level="INFO" doc:name="Payload" doc:id="b647fa81-0eed-4304-8101-0f6a0648da23" message="#[payload]"/>
+			</batch:on-complete>
+		</batch:job>
+	</flow>
+</mule>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="6953a259-b189-4448-83da-a581d6410a39" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="63cc0fb6-1c27-4269-8c54-af24da0bbeb7" >
+		<db:my-sql-connection host="mudb.learn.mulesoft.com" port="3306" user="mule" password="mule" database="training" />
+	</db:config>
+	<flow name="training4-american-wsFlow" doc:id="70113d98-c501-4938-89b6-811d7fc5f8ab" >
+		<http:listener doc:name="Listener" doc:id="fd808dcc-d259-4646-b2be-6b31a02060bc" config-ref="HTTP_Listener_config" path="/flights"/>
+		<set-variable value="#[attributes.queryParams.toAirport]" doc:name="Set Variable" doc:id="e250fa12-1f7e-43df-af89-41002634b865" variableName="toAirport"/>
+		<db:select doc:name="Select" doc:id="4040a2ae-de3d-41ce-bc57-f8e545db6fb4" config-ref="Database_Config" transactionalAction="NOT_SUPPORTED">
+			<db:sql ><![CDATA[SELECT *
+FROM american
+WHERE toAirport = :toAirport]]></db:sql>
+			<db:input-parameters ><![CDATA[#[%dw 2.0
+output application/json
+---
+{
+	toAirport: vars.toAirport
+}]]]></db:input-parameters>
+		
+</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="32941a11-4ee7-4189-ae61-721bdf104f5a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	ID: payload01.ID,
+	code: (payload01.code1 default "") ++ (payload01.code2 default ""),
+	price: payload01.price default 0,
+	departureDate: payload01.takeOffDate as String default "",
+	origin: payload01.fromAirport default "",
+	destination: payload01.toAirport default "",
+	emptySeats: payload01.seatsAvailable default 0,
+	plane: {
+		"type": payload01.planeType default "",
+		totalSeats: payload01.totalSeats default 0
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="d66da622-b05b-4f11-aeb1-6b84ef73bc40" />
+	
+</flow>
+	<flow name="training4-american-wsFlow1" doc:id="159f81ae-ffcd-4c1b-9163-51775ffa3e49" >
+		<http:listener doc:name="Listener" doc:id="00747770-9de7-4762-b142-3d8b431f6de0" config-ref="HTTP_Listener_config" path="/test"/>
+		<set-payload value="#[[1,2,3,4]]" doc:name="Set Payload" doc:id="23b19629-3ebf-40f7-9469-ed7c0ec66612" />
+		<foreach doc:name="For Each" doc:id="55eaf3ab-3aec-4752-8078-090c7ecbbcf2" >
+			<set-payload value='#["order" ++ payload]' doc:name="Set Payload" doc:id="e096da0e-df95-4a4e-b79a-28941aed0244" />
+		</foreach>
+		<logger level="INFO" doc:name="Logger" doc:id="17bb316d-a27f-4a64-bf98-0ad35c39175b" />
+	</flow>
+
+</mule>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="No190Flow" doc:id="70778d37-6b89-45f1-a189-c2e66460ddb1" >
+		<http:listener doc:name="HTTP Listener" doc:id="5e3a3fde-a90e-4ae6-a368-713b0774c979" config-ref="HTTP_Listener_config" path="/190"/>
+		<set-payload value="Start" doc:name="Start" doc:id="5cddb0a3-c78e-42f2-b820-f94adbedaecb" />
+		<set-variable value="#[payload]" doc:name="counter = 0" doc:id="a24bcb51-261a-421b-b489-12f0e3677d46" variableName="counter0"/>
+		<set-payload value="Process" doc:name="Process" doc:id="97d728a3-0150-47f2-b0fb-a2dfde4aab16" />
+		<set-variable value="" doc:name="counter = 1" doc:id="1e0fcc5c-bb56-44ed-aec8-7c904139396f" variableName="counter1"/>
+		<set-payload value="#[payload]" doc:name="Stop" doc:id="62450bcf-338c-44ef-9ff6-628579bb48b2" />
+	</flow>
+</mule>

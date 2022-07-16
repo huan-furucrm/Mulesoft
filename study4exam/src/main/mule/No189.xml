@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="ebf634fb-e372-45e3-8cc2-3fcf25774de6" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="color" doc:id="e79e68a8-a20c-4cd6-bec2-0416090742a2" >
+		<http:listener doc:name="HTTP: PUT /color" doc:id="d2234ebd-a1e7-4a7e-b05f-670516374e4f" config-ref="HTTP_Listener_config" path="/color"/>
+		<set-payload value='#[%dw 2.0&#10;output application/java&#10;---&#10;"Blue"]' doc:name='Payload default "Blue"' doc:id="16d3341d-8a8d-4e22-bb91-a261739c42a9" />
+		<choice doc:name="Payload color" doc:id="c3137c21-6c0e-412c-8bd2-46c22a23253e" >
+			<when expression='#[payload contains "Red"]'>
+				<set-payload value="#[payload]" doc:name="Blk" doc:id="fa3679c2-0abd-4e08-bdf1-49347a2a87d5" />
+			</when>
+			<when expression='#[payload contains "Blk"]'>
+				<set-payload value="#[payload]" doc:name="Green" doc:id="ee7bb165-e82d-4186-93c0-62453c3d14ec" />
+			</when>
+			<otherwise >
+				<set-payload value="#[payload]" doc:name="Red" doc:id="95d1bfb2-cee1-447d-b99f-198608d0e18b" />
+				<flow-ref doc:name="color" doc:id="0b873e0e-e348-4aea-9345-680b114b94f4" name="color"/>
+			</otherwise>
+		</choice>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="3f6711d7-bd31-48f8-a1ce-eaa7f4c464f0" />
+		<logger level="DEBUG" doc:name="Logger" doc:id="4946997a-4e97-40f8-9094-876140c13544" message="#[payload]"/>
+	</flow>
+</mule>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="a52baa44-d38a-4fa1-856b-6646b3a707d3" >
+		<db:my-sql-connection host="mudb.learn.mulesoft.com" port="3306" user="mule" password="mule" database="training" />
+	</db:config>
+	<flow name="No195Flow" doc:id="4aeca228-8a06-412d-a9c0-c76d2cd068dc" >
+		<http:listener doc:name="Listener" doc:id="90fa1f53-26ae-4ea3-869b-2cea4bd13129" config-ref="HTTP_Listener_config" path="/195"/>
+		<db:select doc:name="DB Fetch account" doc:id="a061d991-ebbe-40a9-98c9-63c8f64efb3d" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT accountID, country, street, name, postal, city, state 
+FROM accounts
+WHERE city = : city
+AND state = : state]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'city':attributes.queryParams.city,
+	'state':attributes.queryParams.state
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Convert to JSON" doc:id="959821a5-4287-405a-8564-519e0b07f26e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	country: payload01.country,
+	street: payload01.street,
+	state: payload01.state,
+	name: payload01.name,
+	city: payload01.city,
+	postal: payload01.postal
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="1453b2e8-2b40-44b8-8437-a1d74837b9f1" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="268bc715-cee2-40e8-a0b3-42612f40e4b5" >
+		<salesforce:basic-connection username="huan@daotrong.com" password="thAIbInh2" securityToken="qEoP8PXb9vRqmG7kNsFSB6Jhp" />
+	</salesforce:sfdc-config>
+	<flow name="democodeFlow" doc:id="4ed61aee-3154-4a48-bfa3-450b0bf42e3b" >
+		<http:listener doc:name="Listener" doc:id="7e7d716c-cdc8-443c-8029-16042bfc1d2d" config-ref="HTTP_Listener_config" path="/test"/>
+		<java:invoke-static method='sayHi()' doc:name="Invoke static" doc:id="b6a90d67-4e80-4abf-bb8c-414a8b9d9812" class="democode.helloWorld">
+			<java:args ><![CDATA[#["ac"]]]></java:args>
+		</java:invoke-static>
+	</flow>
+	<flow name="democodeFlow2" doc:id="55baf1eb-3ab6-4ba9-a84d-6d79fad0b7e9" >
+		<http:listener doc:name="Listener" doc:id="0055ed16-b4f2-467a-95ae-acc95ebe75cc" config-ref="HTTP_Listener_config" path="/" allowedMethods="GET,  POST"/>
+		<set-payload doc:name="Before" doc:id="f3db97fb-59a9-4da9-b6dd-de7b368b1c66" value="Before"/>
+		<validation:is-not-null doc:name="payload" doc:id="b307d435-11ab-44c0-a3e5-8c46a6a7ddec" value="#[payload]" message="Validation Error"/>
+		<set-payload value="After" doc:name="After" doc:id="e7a0fdb0-2d50-4f99-8391-9bd29cf05bbb" />
+	</flow>
+	<flow name="democodeFlow1" doc:id="d39cf0cf-0e68-4cca-8483-bf05db83b5ca" >
+		<http:listener doc:name="Listener" doc:id="ce4fa294-cda3-4db0-9869-dfb805f68014" config-ref="HTTP_Listener_config" path="/sf"/>
+		<salesforce:unauthorize doc:name="Unauthorize" doc:id="df169824-72ce-4ba9-9fc4-883cdf158d84" config-ref="Salesforce_Config"/>
+	</flow>
+</mule>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
+	<flow name="No194Flow" doc:id="83ea5158-6bcd-4656-be17-0eaa5e757dfe" >
+		<http:listener doc:name="Listener" doc:id="3c879cd2-db94-438a-86ae-37a44b0a773e" config-ref="HTTP_Listener_config" path="/194"/>
+		<set-payload value='#[[&#10;	{name:"ProductA", amount:100, price:"200"},&#10;	{name:"ProductB", amount:40, price:"400"},&#10;	{name:"ProductC", amount:2, price:"600"}&#10;]]' doc:name="Set Payload" doc:id="bb2a4aaa-ca27-4310-9f9e-be0ecce8f0f9" />
+		<batch:job jobName="No194Batch_Job" doc:id="353bfe7f-3940-4ce0-9046-dfee6dccd874" >
+			<batch:process-records >
+				<batch:step name="LessThan50" doc:id="6f1a36e9-7a52-4052-abf6-b688d3c7967d" acceptExpression="#[payload.amount &lt; 50]" acceptPolicy="ALL">
+					<set-payload value="#[{amount:payload.amount + 100}]" doc:name="amount:payload.amount + 100" doc:id="a682f930-68f0-4a61-89e8-a6d30f7d1f7f" />
+					<logger level="INFO" doc:name="payload" doc:id="61a3d037-dbd1-4bbb-927e-f8001988d44c" message="#[payload]"/>
+				</batch:step>
+				<batch:step name="GreaterThan20" doc:id="1e0a0249-e463-46be-8fa0-99ea05f7dac5" acceptExpression="#[payload.amount &gt; 20]" acceptPolicy="ALL">
+					<set-payload value="#[step2amount:payload.amount]" doc:name="step2amount:payload.amount" doc:id="d9b08390-32ed-4060-9acd-bd3509929f58" />
+					<logger level="INFO" doc:name="payload" doc:id="88ef5bf9-476b-4d48-92d9-5ad7f96d802a" message="#[payload]"/>
+				</batch:step>
+			</batch:process-records>
+		</batch:job>
+	</flow>
+</mule>
